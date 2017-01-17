@@ -8,70 +8,13 @@ TODOs:
 -->
 
 <body style="font-family: monospace">
+  <div><canvas id="canvas" width="800px" height="100px"></canvas>
+  <div id="content"></div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-  <table style="border: solid 2px;padding: 2px">
-    <tr>
-      <td>CIDR</td>
-      <td><input id="ipField" value="10.0.0.1/24" /></td>
-    </tr>
-    <tr>
-      <td>Raw</td>
-      <td id='rawSpan'></td>
-    </tr>
-    <tr>
-      <td>Size</td>
-      <td id='sizeSpan'></td>
-    </tr>
-    <tr>
-      <td>Range</td>
-      <td id='rangeSpan'></td>
-    </tr>
-    <tr>
-      <td>Mask</td>
-      <td id='maskSpan'></td>
-    </tr>
-  </table>
-
+  <script src="cidr.js"></script>
   <script>
-  function toIp(raw) {
-    return (raw>>24) + '.' + (raw>>16 & 0xff) + '.' + (raw>>8 & 0xff) + '.' + (raw & 0xff);
-  }
-
-  function maskStr(mask) {
-    var ret = ''
-    for (var i=0; i<4; i++) {
-      var val =(mask>>(24 - 8*i)) & 0xff;
-      ret += (val>>4 & 0xf).toString(16);
-      ret += (val & 0xf).toString(16);
-    }
-    return ret;
-  }
-
-  function update() {
-    var txt = $('#ipField').val();
-    var match = /(\d+)\.(\d+)\.(\d+)\.(\d+)\/(\d+)/.exec(txt.trim());
-    if (! match) {
-      console.log('invalid ip range: ' + txt);
-      return;
-    }
-
-    var ip = ((parseInt(match[1]) << 24)
-             | (parseInt(match[2]) << 16)
-             | (parseInt(match[3]) << 8)
-             | parseInt(match[4]));
-    var cidr = parseInt(match[5]);
-    var minMask = 0xffffffff << (32-cidr);
-
-
-    $('#rawSpan').html(ip);
-    $('#sizeSpan').html(Math.pow(2, 32-parseInt(match[5])));
-    $('#rangeSpan').html(
-        toIp(minMask & ip) + ' - ' + toIp((0xffffffff & (~minMask)) | ip));
-    $('#maskSpan').html('0x' + maskStr(minMask));
-  }
-
-  update()
-  $('#ipField').on('input', update);
+    addEntry();
   </script>
+  <br/>
+  <button onClick='addEntry()'>add</button>
 </body>
