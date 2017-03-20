@@ -1,0 +1,155 @@
+html, body {
+    height: 100%;
+    margin: 0px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+#topBar {
+    background-color: #1f4;
+}
+
+#browser {
+    height: 30%;
+    overflow: scroll;
+    resize: vertical;
+}
+
+#browserRegion {
+    height: 100%;
+    width: 50%;
+    background-color: #aff;
+    overflow: scroll;
+    float: left;
+}
+
+#jobBrowserRegion {
+    height: 100%;
+    width: 50%;
+    background-color: #faf;
+    overflow: scroll;
+    float: left;
+}
+
+.clear {
+    float: clear;
+}
+
+#contentRegion {
+    height: 70%;
+    overflow: scroll;
+}
+
+.browser-tree-top-list {
+    list-style-type: none;
+    background-color: #fff;
+    margin: 0;
+    padding-left: 5px;
+}
+
+.browser-tree-child-list {
+    list-style-type: none;
+    background-color: #fff;
+}
+
+.browser-tree-item {
+    list-style-type: none;
+    background-color: #fff;
+}
+
+.browser-tree-label {
+    display: inline-block;
+}
+.browser-tree-item:hover {
+    background-color: #afa;
+}
+
+.browser-tree-item-view {
+    background-color: #aca;
+    display: inline-block;
+}
+
+.browser-tree-item-data {
+    background-color: #cac;
+    display: inline-block;
+}
+
+#results {
+    background-color: #eee;
+}
+
+#results tr:nth-child(even) {
+    background-color: #eee;
+}
+
+#results tr:nth-child(odd) {
+    background-color: #ddd;    
+}
+
+.timeline-graph {
+    padding: 0;
+}
+
+.timeline-td {
+    white-space: nowrap;
+}
+
+.timeline-cell-group {
+    display: inline-block;
+    flex-direction: row;
+    margin: 0px;
+    background-color: #aaa;
+    border-left: solid 1px;
+    border-right: solid 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.timeline-cell-block {
+    display: inline-block;
+    padding: 2px;
+}
+
+.timeline-cell-block-0 { 
+    color: #f00;
+}
+
+.timeline-cell-block-1 { 
+    color: #f30;
+}
+
+.timeline-cell-block-2 { 
+    color: #f50;
+}
+
+.timeline-cell-block-3 { 
+    color: #f80;
+}
+
+.timeline-cell-block-4 { 
+    color: #fa0;
+}
+
+.timeline-cell-block-5 { 
+    color: #fc0;
+}
+
+.timeline-cell-block-6 { 
+    color: #fd0;
+}
+
+.timeline-cell-block-7 { 
+    color: #ff0;
+}
+
+.timeline-cell-block-8 { 
+    color: #af0;
+}
+
+.timeline-cell-block-9 { 
+    color: #0f0;
+}
+
+.timeline-cell-label {
+    text-align: center;
+    font-size: 10pt;
+}
