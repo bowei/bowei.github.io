@@ -6,6 +6,8 @@ const searchDialogOverlay = document.getElementById('search-dialog-overlay');
 const searchDialogDialog = document.getElementById('search-dialog-dialog');
 const searchDialogInput = document.getElementById('search-dialog-input');
 const searchDialogList = document.getElementById('search-dialog-list');
+const helpDialogOverlay = document.getElementById('help-dialog-overlay');
+const helpDialogDialog = document.getElementById('help-dialog-dialog');
 const helpText = document.getElementById('help-text');
 
 function splitTypeName(fullTypeName) {
@@ -158,18 +160,6 @@ function createColumn(typeName) {
   const typeInfo = typeData[typeName];
   if (!typeInfo) return;
 
-  // If type is an alias, use the aliased type for display.
-  const displayTypeInfo = typeInfo.aliasedTo ? typeData[typeInfo.aliasedTo] : typeInfo;
-  if (!displayTypeInfo) {
-    console.log(`ERROR: aliasedTo type not found: ${typeInfo.aliasedTo}`);
-    return;
-  }
-  // XXX
-  if (typeInfo.aliasedTo) {
-    console.log(`Type alias: ${typeInfo} ${displayTypeInfo}`)
-  }
-
-
   const column = document.createElement('div');
   column.className = 'column';
   column.dataset.typeName = typeName;
@@ -178,15 +168,11 @@ function createColumn(typeName) {
   header.className = 'column-header';
 
   const headerType = document.createElement('div');
-  if (typeInfo.aliasedTo) {
-    headerType.innerHTML = `${typeInfo.typeName} <span class="alias-equals">=</span> ${displayTypeInfo.typeName}`;
-  } else {
-    headerType.innerHTML = displayTypeInfo.typeName;
-  }
+  headerType.innerHTML = typeInfo.typeName;
   headerType.className = 'header-row';
 
   const headerPkg = document.createElement('div');
-  headerPkg.innerHTML = displayTypeInfo.package;
+  headerPkg.innerHTML = typeInfo.package;
   headerPkg.className = 'type-name';
 
   header.appendChild(headerType);
@@ -196,8 +182,8 @@ function createColumn(typeName) {
 
   const ul = document.createElement('ul');
 
-  if (displayTypeInfo.fields) {
-    displayTypeInfo.fields.forEach(field => {
+  if (typeInfo.fields) {
+    typeInfo.fields.forEach(field => {
       const li = document.createElement('li');
       li.dataset.fieldName = field.fieldName;
       li.dataset.typeName = field.typeName;
@@ -246,8 +232,8 @@ function createColumn(typeName) {
     });
   }
 
-  if (displayTypeInfo.enumValues) {
-    displayTypeInfo.enumValues.forEach(enumVal => {
+  if (typeInfo.enumValues) {
+    typeInfo.enumValues.forEach(enumVal => {
       const li = document.createElement('li');
       li.style.cursor = 'default';
 
@@ -364,6 +350,16 @@ function hideSearchDialog() {
   console.log('Hiding search dialog');
   searchDialogInput.value = '';
   searchDialogOverlay.style.display = 'none';
+}
+
+function showHelpDialog() {
+  console.log('Showing help dialog');
+  helpDialogOverlay.style.display = 'flex';
+}
+
+function hideHelpDialog() {
+  console.log('Hiding help dialog');
+  helpDialogOverlay.style.display = 'none';
 }
 
 /**
@@ -604,19 +600,123 @@ function init() {
 
 window.addEventListener('DOMContentLoaded', init);
 
-document.addEventListener('keydown', (event) => {
+function handleKeyDown(event) {
   if (event.key === '/' && event.target.tagName !== 'INPUT') {
     console.log('‘/’ key pressed');
     event.preventDefault();
     showSearchDialog();
+    return;
+  }
+  if (event.key === '?' && event.target.tagName !== 'INPUT') {
+    console.log('‘?’ key pressed');
+    event.preventDefault();
+    showHelpDialog();
+    return;
   }
   if (event.key === 'Escape') {
     if (searchDialogOverlay.style.display === 'flex') {
       console.log('‘esc’ key pressed');
       hideSearchDialog();
     }
+    if (helpDialogOverlay.style.display === 'flex') {
+      console.log('‘esc’ key pressed');
+      hideHelpDialog();
+    }
+    return;
   }
-});
+
+  if (searchDialogOverlay.style.display === 'flex' || helpDialogOverlay.style.display === 'flex') {
+    return;
+  }
+
+  const activeKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter'];
+  if (!activeKeys.includes(event.key)) {
+    return;
+  }
+
+  event.preventDefault();
+
+  let selectedItems = mainContainer.querySelectorAll('li.selected');
+
+  if (selectedItems.length === 0) {
+    if (['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
+      const firstItem = mainContainer.querySelector('.column:first-child li');
+      if (firstItem) {
+        firstItem.classList.add('selected');
+        firstItem.scrollIntoView({ block: 'nearest' });
+        updateHash();
+      }
+    }
+    return;
+  }
+
+  const activeSelection = selectedItems[selectedItems.length - 1];
+  const activeColumn = activeSelection.closest('.column');
+
+  switch (event.key) {
+    case 'ArrowUp': {
+      const prev = activeSelection.previousElementSibling;
+      if (prev) {
+        activeSelection.classList.remove('selected');
+        prev.classList.add('selected');
+        prev.scrollIntoView({ block: 'nearest' });
+        updateHash();
+      }
+      break;
+    }
+    case 'ArrowDown': {
+      const next = activeSelection.nextElementSibling;
+      if (next) {
+        activeSelection.classList.remove('selected');
+        next.classList.add('selected');
+        next.scrollIntoView({ block: 'nearest' });
+        updateHash();
+      }
+      break;
+    }
+    case 'ArrowRight': {
+      if (typeData[activeSelection.dataset.typeName]) {
+        handleFieldClick(activeSelection);
+        const newColumn = activeColumn.nextElementSibling;
+        if (newColumn) {
+          const firstItem = newColumn.querySelector('li');
+          if (firstItem) {
+            firstItem.classList.add('selected');
+            firstItem.scrollIntoView({ block: 'nearest' });
+            updateHash();
+          }
+        }
+      }
+      break;
+    }
+    case 'ArrowLeft': {
+      if (activeColumn !== mainContainer.firstElementChild) {
+        activeColumn.remove();
+        updateHash();
+        const newSelectedItems = mainContainer.querySelectorAll('li.selected');
+        if (newSelectedItems.length > 0) {
+            const newActiveSelection = newSelectedItems[newSelectedItems.length - 1];
+            newActiveSelection.scrollIntoView({ block: 'nearest' });
+        }
+      }
+      break;
+    }
+    case 'Enter': {
+      const docString = activeSelection.querySelector('.doc-string');
+      if (docString) {
+        const summary = docString.children[0];
+        const details = docString.children[1];
+        if (summary && details && summary.querySelector('span')) {
+          summary.hidden = !summary.hidden;
+          details.hidden = !details.hidden;
+        }
+      }
+      break;
+    }
+  }
+}
+
+document.addEventListener('keydown', handleKeyDown);
 
 helpText.addEventListener('click', () => {
   showSearchDialog();
@@ -666,3 +766,15 @@ searchDialogDialog.addEventListener('click', (event) => {
 searchDialogOverlay.addEventListener('click', () => {
   hideSearchDialog();
 });
+
+helpDialogDialog.addEventListener('click', (event) => {
+  event.stopPropagation();
+});
+
+helpDialogOverlay.addEventListener('click', () => {
+  hideHelpDialog();
+});
+
+module.exports = {
+  splitTypeName,
+};
