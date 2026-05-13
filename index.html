@@ -1,13 +1,89 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
-<title>Bowei's tools</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bowei's Tools</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 72px 24px 80px;
+    background: #f9f9f8;
+    color: #1a1a1a;
+    line-height: 1.6;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #111;
+    letter-spacing: -0.01em;
+  }
+
+  .byline {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 48px;
+  }
+
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .tool {
+    display: block;
+    text-decoration: none;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #e5e5e3;
+    border-radius: 6px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .tool:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  .tool-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 3px;
+  }
+
+  .tool-desc {
+    font-size: 13px;
+    color: #777;
+  }
+
+  .wip {
+    display: inline-block;
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 5px;
+  }
+</style>
 </head>
 <body>
-  <h1>Tools</h1>
-  <ul>
-    <li><a href="https://bowei.github.io/dock8s/">Kubernetes API reference</a>: Kubernetes API documentation in a more accessible format.</li>
-    <li><a href="https://bowei.github.io/net-fiddle/">Linux Network Stack Fiddle</a>: Drag and drop your Linux networking stack (work in progress)</li>
-  </ul>
+  <h1>Bowei's Tools</h1>
+  <p class="byline">bowei.github.io</p>
+
+  <div class="tools">
+    <a class="tool" href="https://bowei.github.io/dock8s/">
+      <div class="tool-name">Kubernetes API Reference</div>
+      <div class="tool-desc">Kubernetes API documentation in a more accessible format.</div>
+    </a>
+    <a class="tool" href="https://bowei.github.io/net-fiddle/">
+      <div class="tool-name">Linux Network Stack Fiddle</div>
+      <div class="tool-desc">Drag and drop your Linux networking stack.</div>
+      <span class="wip">work in progress</span>
+    </a>
+  </div>
 </body>
 </html>
